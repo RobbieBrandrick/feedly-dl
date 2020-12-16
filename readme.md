@@ -10,7 +10,7 @@ This tool allows me to download all the videos from my Feedly account using yout
 You should be able to install this using pip as follows
 
 ```bash
-pip install git+httpshttps://github.com/RobbieBrandrick/Python
+pip install git+https://github.com/RobbieBrandrick/feedly-dl
 ```
 
 ## Usage
@@ -29,6 +29,8 @@ You'll run the feedly-dl command from the command line and you will need a json 
         "format": "bestvideo[height<=?720][fps<=?30][vcodec!=?vp9]+bestaudio/best"
     }
 ```
+
+youtube-dl-options can be any option specified here <https://github.com/ytdl-org/youtube-dl/blob/3e4cedf9e8cd3157df2457df7274d0c842421945/youtube_dl/YoutubeDL.py#L137-L312>
 
 ### usage
 
