@@ -3,36 +3,39 @@ import os
 from .VideoDownloader import VideoDownloader
 from .Feedly import Feedly
 from .FeedlyEntryVideoDetailsParser import FeedlyEntryVideoDetailsParser
+from .FeedlyDlOptions import FeedlyDlOptions
 
 class FeedlyVideoDownloader:
 
-    def __init__(self, feedlyToken, videoDownloaderOptions, rootDirectory):
-        self.videoDownloaderOptions = videoDownloaderOptions
+    def __init__(self, options):
+        self.Options = FeedlyDlOptions(options)
         self.Downloader = VideoDownloader()
-        self.Feedly = Feedly(feedlyToken)
-        self.rootDirectory = rootDirectory
+        self.Feedly = Feedly(self.Options.token)        
 
-    def download_category(self, category):
+    def download_category(self):
 
-        if os.path.isdir(self.rootDirectory) == False:
-            os.mkdir(self.rootDirectory)
+        if os.path.isdir(self.Options.directory) == False:
+            os.mkdir(self.Options.directory)
 
-        entries = self.Feedly.get_entries(category)
+        entries = self.Feedly.get_entries(self.Options.category)
         videos = FeedlyEntryVideoDetailsParser.parse(entries)
         
         for video in videos:
 
-            if video.viewed == False:
-                continue
+            if self.Options.onlyDownloadUnread == True:
+                if video.viewed == False:\
+                    continue
 
-            directory = self.rootDirectory +  "/" + video.author
+            directory = self.Options.directory + "/" + video.author
 
             if os.path.isdir(directory) == False:
                 os.mkdir(directory)
 
             fileLocation = directory + "/" + video.title + ".%(ext)s"
 
-            self.videoDownloaderOptions["outtmpl"] = fileLocation
-            self.Downloader.download(video.url, self.videoDownloaderOptions)
-            self.Feedly.mark_entry_as_read(video.entryId)
+            self.Options.youtubedlOptions["outtmpl"] = fileLocation
+            self.Downloader.download(video.url, self.Options.youtubedlOptions)
+
+            if self.Options.markDownloadedAsRead:
+                self.Feedly.mark_entry_as_read(video.entryId)
     

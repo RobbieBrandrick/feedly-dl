@@ -12,6 +12,6 @@ def main():
     with open(args.config) as f:
         config = json.load(f)
 
-    downloader = FeedlyVideoDownloader(config['token'], config['youtube-dl-options'], config['directory'])
+    downloader = FeedlyVideoDownloader(config)
 
-    downloader.download_category(config['category'])
+    downloader.download_category()
